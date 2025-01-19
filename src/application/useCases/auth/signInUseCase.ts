@@ -3,7 +3,6 @@ import { InvalidCredentials } from "../../errors/auth/InvalidCredentials";
 import { prismaClient } from "../../lib/prismaClient";
 
 import { sign } from "jsonwebtoken";
-import { env } from "../../config/env";
 
 interface IInput {
   email: string;
@@ -13,7 +12,8 @@ interface IInput {
 interface IOutput {
   accessToken: string;
 }
-export class SignIpUseCase {
+export class SignInUseCase {
+  constructor(private readonly jwtSecret: string) {}
   async execute({ email, password }: IInput): Promise<IOutput> {
     const account = await prismaClient.account.findUnique({
       where: { email: email },
@@ -29,7 +29,7 @@ export class SignIpUseCase {
       throw new InvalidCredentials();
     }
 
-    const accessToken = sign({ sub: account.id }, env.jwtSecret, {
+    const accessToken = sign({ sub: account.id }, this.jwtSecret, {
       expiresIn: "1d",
     });
 

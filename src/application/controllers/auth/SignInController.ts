@@ -1,15 +1,15 @@
 import { z, ZodError } from "zod";
 import { InvalidCredentials } from "../../errors/auth/InvalidCredentials";
 import { IController, IRequest, IResponse } from "../../interfaces/IController";
-import { SignIpUseCase } from "../../useCases/auth/signInUseCase";
+import { SignInUseCase } from "../../useCases/auth/signInUseCase";
 
 const schema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
 });
 
-export class SignUpController implements IController {
-  constructor(private readonly signInUseCase: SignIpUseCase) {}
+export class SignInController implements IController {
+  constructor(private readonly signInUseCase: SignInUseCase) {}
   async handle({ body }: IRequest): Promise<IResponse> {
     try {
       const { email, password } = schema.parse(body);
